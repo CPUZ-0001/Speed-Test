@@ -1,20 +1,31 @@
 from flask import Flask, jsonify
-import speedtest
+import subprocess
 import os
 
 app = Flask(__name__)
 
-# Run the test once on startup
-print("🌐 Testing internet speed...")
-st = speedtest.Speedtest()
-download_speed = round(st.download() / 1_000_000, 2)
-upload_speed = round(st.upload() / 1_000_000, 2)
-print(f"⬇️ Download Speed : {download_speed} Mbps")
-print(f"⬆️ Upload Speed   : {upload_speed} Mbps")
+def run_speedtest():
+    try:
+        # Run CLI and capture output
+        result = subprocess.check_output(["speedtest-cli", "--simple"]).decode()
+        lines = result.strip().split("\n")
+
+        ping = float(lines[0].split()[1])
+        download = float(lines[1].split()[1])
+        upload = float(lines[2].split()[1])
+        return ping, download, upload
+    except Exception as e:
+        return None, None, None
+
+# Run test only once on start
+ping, download_speed, upload_speed = run_speedtest()
 
 @app.route('/')
-def get_speed():
+def show_speed():
+    if download_speed is None:
+        return jsonify({"error": "Speed test failed"}), 500
     return jsonify({
+        "ping_ms": ping,
         "download_mbps": download_speed,
         "upload_mbps": upload_speed
     })
