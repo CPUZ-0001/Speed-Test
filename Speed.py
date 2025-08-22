@@ -16,7 +16,7 @@ API_BASE = "https://test-api.gaurav281833.workers.dev"
 ADMIN_IDS = [7372592479]  # Optional: Add your Telegram user IDs here
 
 # ✅ MongoDB Setup (add this before main() or inside your config section)
-client = MongoClient("mongodb+srv://BLACKHAT:SPIKE@cluster0.h3sxp.mongodb.net/BOTS?retryWrites=true&w=majority&appName=Cluster0")  # Change to your actual MongoDB URI
+client = MongoClient("")  # Change to your actual MongoDB URI
 db = client["terabox_bot"]
 all_users_collection = db["users"]
 
